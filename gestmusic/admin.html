@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GESTMUSIC — Administração</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/styles.css"/>
+</head>
+<body>
+  <div id="root"></div>
+
+  <!-- 1. Core: banco de dados, helpers, icons -->
+  <script src="js/core.js"></script>
+
+  <!-- 2. Shell do admin: render, sidebar, login -->
+  <script src="js/app.js"></script>
+
+  <!-- 3. Páginas do admin -->
+  <script src="js/pages-dashboard-artists.js"></script>
+  <script src="js/pages-projects.js"></script>
+  <script src="js/pages-files-sessions-finance.js"></script>
+  <script src="js/page-profile.js"></script>
+  <script src="js/pages-novidades.js"></script>
+
+  <!-- 4. Boot directo para o admin (sem portal) -->
+  <script>
+    bootApp();
+  </script>
+</body>
+</html>

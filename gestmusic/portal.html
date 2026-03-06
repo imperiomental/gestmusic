@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GESTMUSIC — Portal do Artista</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/styles.css"/>
+</head>
+<body>
+  <div id="root"></div>
+  <!-- core.js tem as credenciais Supabase e toda a lógica de dados -->
+  <script src="js/core.js"></script>
+  <script src="js/portal-publico.js"></script>
+  <script>
+    async function bootPortal() {
+      document.getElementById('root').innerHTML = `
+        <div style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--bg-deep);gap:16px">
+          <div style="width:56px;height:56px;background:linear-gradient(135deg,var(--gold),#5B3E08);border-radius:14px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 30px var(--gold-glow)">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#080B10" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+          </div>
+          <div style="font-family:Bebas Neue;font-size:20px;letter-spacing:3px;color:var(--gold-bright)">GESTMUSIC RECORD</div>
+          <div style="display:flex;align-items:center;gap:10px;color:var(--text-muted);font-size:13px">
+            <div style="width:16px;height:16px;border:2px solid var(--gold);border-top-color:transparent;border-radius:50%;animation:spin .8s linear infinite"></div>
+            A carregar...
+          </div>
+          <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
+        </div>`;
+
+      // Bloquear file:// — Supabase não funciona sem servidor
+      if (window.location.protocol === 'file:') {
+        document.getElementById('root').innerHTML = `
+          <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--bg-deep);padding:20px">
+            <div style="background:var(--bg-card);border:1px solid rgba(245,158,11,.4);border-radius:16px;padding:36px;max-width:460px;width:100%;text-align:center">
+              <div style="font-size:48px;margin-bottom:12px">🚫</div>
+              <div style="font-family:Bebas Neue;font-size:22px;color:var(--orange);margin-bottom:10px">FICHEIRO LOCAL</div>
+              <div style="font-size:13px;color:var(--text-secondary);line-height:1.7;margin-bottom:16px">
+                O portal não pode ligar ao Supabase quando aberto directamente.<br>
+                Usa o <strong style="color:var(--gold)">Live Server</strong> no VS Code ou acede pelo <strong style="color:var(--gold)">Netlify</strong>.
+              </div>
+              <div style="font-family:Space Mono;font-size:11px;background:var(--bg-deep);padding:10px;border-radius:8px;color:var(--neon)">http://localhost:5500/portal.html</div>
+            </div>
+          </div>`;
+        return;
+      }
+
+      try {
+        appData = await loadAllData();
+      } catch(e) {
+        document.getElementById('root').innerHTML = `
+          <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--bg-deep);padding:20px">
+            <div style="background:var(--bg-card);border:1px solid rgba(239,68,68,.3);border-radius:16px;padding:32px;max-width:400px;text-align:center">
+              <div style="font-size:40px;margin-bottom:12px">⚠️</div>
+              <div style="font-family:Bebas Neue;font-size:20px;color:var(--red);margin-bottom:10px">ERRO DE LIGAÇÃO</div>
+              <div style="font-size:13px;color:var(--text-secondary);margin-bottom:16px;line-height:1.6">Não foi possível carregar os dados.<br>Verifica a tua ligação à internet.</div>
+              <button class="btn btn-gold" onclick="location.reload()">↺ Tentar novamente</button>
+            </div>
+          </div>`;
+        return;
+      }
+
+      // Se o URL tem ?codigo=XXXX, pré-preenche o campo mas NÃO entra automaticamente
+      const params = new URLSearchParams(window.location.search);
+      const codigoUrl = params.get('codigo');
+      if (codigoUrl) portalCodigoPreenchido = codigoUrl.trim().toUpperCase();
+      renderPortal();
+    }
+    bootPortal();
+  </script>
+</body>
+</html>
